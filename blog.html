@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日記 | あみもの日和</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yusei+Magic&family=Zen+Maru+Gothic:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #e3f4fb;
+    --paper: #ffffff;
+    --ink: #33313e;
+    --ink-soft: #6f6c7e;
+    --blue: #4fb4e8;
+    --blue-deep: #1f8fcf;
+    --blue-pale: #dbf2fc;
+    --pink: #ff1493;
+    --pink-deep: #d10f79;
+    --pink-pale: #ffd6ea;
+    --radius: 18px;
+    --pop-shadow: 5px 5px 0 var(--ink);
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin: 0;
+    background: var(--bg);
+    background-image: radial-gradient(#ffffff 2.5px, transparent 2.5px),
+                       radial-gradient(var(--pink-pale) 2.5px, transparent 2.5px);
+    background-size: 46px 46px;
+    background-position: 0 0, 23px 23px;
+    color: var(--ink);
+    font-family: "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+    line-height: 1.9;
+    font-size: 16px;
+  }
+
+  h1, h2, h3{
+    font-family: "Zen Maru Gothic", "Zen Kaku Gothic New", sans-serif;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .logo-text{
+    font-family: "Yusei Magic", "Zen Maru Gothic", sans-serif;
+    font-weight: 400;
+  }
+
+  a{ color: var(--blue-deep); text-decoration: none; }
+  a:hover{ color: var(--pink-deep); }
+  a:focus-visible, button:focus-visible{
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+  }
+
+  img, svg{ max-width: 100%; display: block; }
+
+  .wrap{ max-width: 1040px; margin: 0 auto; padding: 0 28px; }
+  .wrap-narrow{ max-width: 720px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- Header ---------- */
+  header{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg);
+    border-bottom: 3px solid var(--ink);
+  }
+  .header-inner{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 28px;
+    max-width: 1040px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .logo{ display: flex; align-items: center; gap: 10px; }
+  .logo-text{ font-size: 1.4rem; }
+  .logo-text small{
+    display: block;
+    font-family: "Zen Kaku Gothic New", sans-serif;
+    font-size: .6rem;
+    letter-spacing: .16em;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  nav ul{
+    list-style: none;
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+  }
+  nav a{
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: .9rem;
+    font-weight: 700;
+    color: var(--ink);
+    border: 2.5px solid var(--ink);
+    background: #fff;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform .12s ease;
+  }
+  nav a:hover{ transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--ink); }
+  nav a.current{ background: var(--pink); color: #fff; }
+  nav a.current:hover{ color: #fff; }
+
+  /* ---------- Page hero ---------- */
+  .page-hero{ padding: 52px 0 20px; text-align: center; }
+  .eyebrow-tag{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .84rem;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--blue-pale);
+    padding: 6px 16px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+    border: 2.5px solid var(--ink);
+    transform: rotate(-2deg);
+  }
+  .eyebrow-tag svg{ width: 15px; height: 15px; }
+  .page-hero h1{
+    font-size: 2.1rem;
+    margin: 0 0 14px;
+  }
+  .page-hero p{
+    color: var(--ink-soft);
+    font-size: .96rem;
+    max-width: 46ch;
+    margin: 0 auto;
+  }
+
+  .needle-divider{ display: flex; align-items: center; gap: 14px; margin: 34px 0 0; }
+  .needle-divider svg{ width: 46px; height: 46px; flex-shrink: 0; }
+  .needle-divider .line{
+    flex: 1; height: 4px; border-radius: 4px;
+    background: repeating-linear-gradient(90deg, var(--blue) 0 14px, var(--pink) 14px 28px);
+  }
+
+  /* ---------- Diary feed (Twitter-style: date + text only) ---------- */
+  .feed{ padding: 44px 0 70px; }
+  .month-label{
+    display: inline-block;
+    font-size: .84rem;
+    font-weight: 700;
+    color: var(--ink);
+    background: #fff;
+    border: 2.5px solid var(--ink);
+    border-radius: 10px;
+    padding: 4px 14px;
+    margin: 34px 0 18px;
+    transform: rotate(-1deg);
+  }
+  .month-label:first-child{ margin-top: 0; }
+
+  .feed-list{ display: flex; flex-direction: column; gap: 16px; }
+  .feed-item{
+    background: var(--paper);
+    border: 2.5px solid var(--ink);
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 4px 4px 0 var(--ink);
+    border-left-width: 7px;
+  }
+  .feed-item:nth-child(odd){ border-left-color: var(--blue); }
+  .feed-item:nth-child(even){ border-left-color: var(--pink); }
+  .feed-item time{
+    display: block;
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    letter-spacing: .02em;
+  }
+  .feed-item p{ margin: 0; font-size: .97rem; }
+
+  /* ---------- Footer ---------- */
+  footer{
+    background: var(--ink);
+    color: #e8e6f0;
+    padding: 60px 0 30px;
+    margin-top: 40px;
+    border-top: 6px solid var(--pink);
+  }
+  footer h2, footer h3{ color: #fff; }
+  .footer-grid{ display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; }
+  .contact-form{ display: flex; flex-direction: column; gap: 12px; max-width: 420px; }
+  .contact-form label{ font-size: .8rem; color: #c3c0d4; font-weight: 700; }
+  .contact-form input,
+  .contact-form textarea{
+    background: #423f52;
+    border: 2px solid #5c5870;
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: #fff;
+    font-family: inherit;
+    font-size: .9rem;
+  }
+  .contact-form textarea{ resize: vertical; min-height: 90px; }
+  .btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 26px;
+    border-radius: 999px;
+    font-size: .94rem;
+    font-weight: 700;
+    border: 2.5px solid var(--ink);
+    cursor: pointer;
+    box-shadow: var(--pop-shadow);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover{ transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--ink); }
+  .btn:active{ transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--ink); }
+  .contact-form button{
+    align-self: flex-start;
+    margin-top: 4px;
+    background: var(--pink);
+    color: #fff;
+    border: 2.5px solid var(--ink);
+    box-shadow: 4px 4px 0 #17151d;
+  }
+  .contact-form button:hover{ background: var(--blue); }
+
+  .footer-links ul{ list-style: none; padding: 0; margin: 0 0 26px; }
+  .footer-links li{ margin-bottom: 8px; font-size: .88rem; }
+  .footer-links a{ color: #d6d3e6; }
+  .footer-links a:hover{ color: var(--pink); }
+
+  .footer-note{
+    font-size: .76rem;
+    color: #9a97ab;
+    line-height: 1.8;
+    border-top: 1px solid #4a4759;
+    margin-top: 40px;
+    padding-top: 20px;
+  }
+  .footer-note a{ color: #b7b4c8; }
+
+  @media (max-width: 780px){
+    .footer-grid{ grid-template-columns: 1fr; }
+    .header-inner{ flex-direction: column; gap: 14px; }
+    nav ul{ justify-content: center; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    nav a, .btn{ transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="16" cy="20" r="10" fill="#4fb4e8" stroke="#33313e" stroke-width="2"/>
+        <circle cx="24" cy="16" r="9" fill="#ff8fb3" stroke="#33313e" stroke-width="2"/>
+        <path d="M10 10 Q20 4 30 10" stroke="#33313e" stroke-width="1.6" fill="none" opacity=".55"/>
+      </svg>
+      <span class="logo-text">あみもの日和<small>KNITTING DIARY</small></span>
+    </div>
+    <nav aria-label="サイト内ナビゲーション">
+      <ul>
+        <li><a href="index.html">ホーム</a></li>
+        <li><a href="blog.html" class="current">日記</a></li>
+        <li><a href="gallery.html">ギャラリー</a></li>
+        <li><a href="about.html">サイトについて</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <div class="wrap-narrow page-hero">
+    <span class="eyebrow-tag">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12c4-6 12-6 16 0"/><circle cx="4" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="20" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg>
+      日記
+    </span>
+    <h1>編み物のお勉強、ちょっとずつ記録中</h1>
+    <p>日付とその日の編み物メモだけを、つぶやくように残していくコーナーです。</p>
+  </div>
+
+  <div class="wrap-narrow">
+    <div class="needle-divider" aria-hidden="true">
+      <svg viewBox="0 0 60 60"><line x1="8" y1="52" x2="52" y2="8" stroke="#33313e" stroke-width="3.5" stroke-linecap="round"/><circle cx="52" cy="8" r="5" fill="#4fb4e8" stroke="#33313e" stroke-width="2"/></svg>
+      <div class="line"></div>
+    </div>
+  </div>
+
+  <div class="wrap-narrow feed">
+
+    <div class="month-label">2026年9月</div>
+    <div class="feed-list">
+      <div class="feed-item">
+        <time>2026.09.20</time>
+        <p>ガーター編みの端が少しきれいに揃うようになってきた気がする。すべり目を使う方法も今度試してみたい。</p>
+      </div>
+      <div class="feed-item">
+        <time>2026.09.14</time>
+        <p>細編みの目の高さがまだ安定しない。次は同じ段数で、力の入れ方を変えずに練習してみる。</p>
+      </div>
+      <div class="feed-item">
+        <time>2026.09.07</time>
+        <p>新しい輪針を買った。号数が変わると持ち手の力加減も変わることに気づいた。</p>
+      </div>
+    </div>
+
+    <div class="month-label">2026年8月</div>
+    <div class="feed-list">
+      <div class="feed-item">
+        <time>2026.08.29</time>
+        <p>メリヤス編みとガーター編みを交互にして模様を作る練習。段数を数え間違えて途中でほどいた。</p>
+      </div>
+      <div class="feed-item">
+        <time>2026.08.21</time>
+        <p>とじ針の使い方を練習。糸始末がまだうまくいかず、表側に響いてしまう。</p>
+      </div>
+      <div class="feed-item">
+        <time>2026.08.15</time>
+        <p>初めて輪編みに挑戦。目がねじれていないか毎段確認するのが大事だと学んだ。</p>
+      </div>
+      <div class="feed-item">
+        <time>2026.08.02</time>
+        <p>かぎ針の長編みを練習。細編みより早く編み進められるのが楽しい。</p>
+      </div>
+    </div>
+
+    <div class="month-label">2026年7月</div>
+    <div class="feed-list">
+      <div class="feed-item">
+        <time>2026.07.24</time>
+        <p>ゲージを取る大切さを実感した回。同じ毛糸でも針の号数で編み地の大きさがかなり変わる。</p>
+      </div>
+      <div class="feed-item">
+        <time>2026.07.10</time>
+        <p>編み物を始めて最初の一目。作り目のやり方をひたすら練習した日。</p>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap footer-grid">
+    <div>
+      <h2>お問い合わせ</h2>
+      <p style="color:#c3c0d4; font-size:.88rem; max-width:42ch;">感想や誤字の指摘など、お気軽にどうぞ。</p>
+      <form class="contact-form" action="https://formspree.io/f/maqvpvoz" method="POST">
+        <div>
+          <label for="name">お名前</label>
+          <input type="text" id="name" name="name">
+        </div>
+        <div>
+          <label for="email">メールアドレス</label>
+          <input type="email" id="email" name="email">
+        </div>
+        <div>
+          <label for="message">メッセージ</label>
+          <textarea id="message" name="message"></textarea>
+        </div>
+        <button type="submit" class="btn">送信する</button>
+      </form>
+    </div>
+
+    <div class="footer-links">
+      <h3>サイト内</h3>
+      <ul>
+        <li><a href="index.html">ホーム</a></li>
+        <li><a href="blog.html">日記</a></li>
+        <li><a href="gallery.html">ギャラリー</a></li>
+        <li><a href="about.html">サイトについて</a></li>
+      </ul>
+      <h3>Azalea Creative Room</h3>
+      <ul>
+        <li><a href="#">Azalea Creative Room ハブ</a></li>
+        <li><a href="#">運営者について</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap footer-note">
+    <p>本サイトのすべてのコンテンツ(文章・イラスト・漫画等)は、AIの学習データとしての利用を禁止します。<br>
+    All content on this site (text, illustrations, manga, etc.) may not be used for AI training purposes.</p>
+    <p>© 2026 あみもの日和 / Azalea Creative Room</p>
+  </div>
+</footer>
+
+</body>
+</html>
